@@ -1,0 +1,95 @@
+# Themes, RSS feeds and search-only sites the routine collects articles from.
+# When adding a theme, also create the matching theme:<slug> label (docs/routine-design.md).
+# Japanese queries are kept on purpose, to find articles written in Japanese.
+
+themes:
+  - slug: agent-design
+    name: AI agent design
+    queries:
+      - AI agent architecture design patterns
+      - building LLM agents lessons learned
+      - AIエージェント 設計
+  - slug: tool-design
+    name: Tool design
+    queries:
+      - tool design for LLM agents
+      - function calling tool definitions best practices
+  - slug: mcp
+    name: MCP
+    queries:
+      - Model Context Protocol MCP server
+      - MCP サーバー
+  - slug: evals
+    name: Evals
+    queries:
+      - LLM evals agent evaluation
+      - evaluating AI agents in production
+  - slug: context-engineering
+    name: Context engineering
+    queries:
+      - context engineering LLM agents
+      - コンテキストエンジニアリング
+  - slug: large-scale-systems
+    name: Large-scale systems
+    queries:
+      - distributed systems engineering blog scaling
+      - large scale system architecture postmortem
+      - 大規模システム アーキテクチャ
+  - slug: data-storage
+    name: Data storage
+    queries:
+      - database internals storage engine
+      - distributed database consistency replication
+      - データベース 内部構造
+  - slug: observability
+    name: Observability
+    queries:
+      - observability OpenTelemetry tracing in production
+      - logs metrics traces cost at scale
+      - オブザーバビリティ 運用
+  - slug: kubernetes
+    name: Kubernetes
+    queries:
+      - Kubernetes operations at scale
+      - Kubernetes controller operator design
+      - Kubernetes 運用
+
+# Feeds confirmed to be fetchable on 2026-10-24.
+feeds:
+  - name: OpenAI News
+    url: https://openai.com/news/rss.xml
+  - name: MCP Blog
+    url: https://blog.modelcontextprotocol.io/index.xml
+  - name: GitHub Blog (generative AI)
+    url: https://github.blog/ai-and-ml/generative-ai/feed/
+  - name: AWS Machine Learning Blog
+    url: https://aws.amazon.com/blogs/machine-learning/feed/
+  - name: Cloudflare Blog
+    url: https://blog.cloudflare.com/rss/
+  - name: Netflix Tech Blog
+    url: https://netflixtechblog.com/feed
+  - name: Meta Engineering
+    url: https://engineering.fb.com/feed/
+  - name: AWS Architecture Blog
+    url: https://aws.amazon.com/blogs/architecture/feed/
+  - name: Mercari Engineering
+    url: https://engineering.mercari.com/blog/feed.xml
+  - name: LY Corporation Tech Blog
+    url: https://techblog.lycorp.co.jp/ja/feed/index.xml
+  - name: CyberAgent Developers Blog
+    url: https://developers.cyberagent.co.jp/blog/feed/
+  - name: Kubernetes Blog
+    url: https://kubernetes.io/feed.xml
+  - name: CNCF Blog
+    url: https://www.cncf.io/feed/
+  - name: OpenTelemetry Blog
+    url: https://opentelemetry.io/blog/index.xml
+  - name: Datadog Engineering
+    url: https://www.datadoghq.com/blog/engineering/index.xml
+
+# Sites without an RSS feed. The routine finds their new posts with a site-restricted web search.
+sites:
+  - name: Anthropic Engineering
+    url: https://www.anthropic.com/engineering
+  - name: Uber Engineering
+    url: https://www.uber.com/blog/engineering/
