@@ -53,7 +53,8 @@ Themes are not limited to AI.
 
 ## Recording selections
 
-- Only mark the articles I want to read. Moving an article to the "To read" column on the kanban board is the mark
+- Only mark the articles I want to read. Adding the `want` label to an article's issue is the mark
+  - At first the mark was moving it to the "To read" column on the kanban board. The cloud routine cannot read the board's columns without storing a token in the cloud, so it changed to a label on 2026-11-21
 - At first, do not record why I picked or skipped an article. Keeping the daily effort low, so that I keep doing it, comes first
 - As selections accumulate, trends such as the blogs I often pick or the themes I always skip will show, and I can adjust the themes I fetch
 - If the adjustments are not precise enough, start recording reasons at that point
@@ -66,23 +67,23 @@ Themes are not limited to AI.
 - I read articles on my PC. They do not need to be delivered to Slack
 - Store each article as one issue in this repository's GitHub Issues, and manage them on a GitHub Projects kanban board
   - The routine already works against GitHub, so no other service needs to be connected
-  - Marking an article is just moving it between columns
+  - Marking an article is just adding a label
   - With sources and themes as labels, tallying selections is just filtering by label
   - Notes for an article can be written in Markdown in the issue body or comments
   - Notion was also a candidate, but connecting it takes more work. Move to it if I want richer notes or tallies
 
 ### Article states
 
-| State | Kanban column | Issue |
+| State | Label | Issue |
 |---|---|---|
-| New | New | open |
-| To read | To read | open |
-| Read | Done | closed (completed) |
-| Skipped | none | closed (not planned), `stale` label |
+| New | none | open |
+| To read | `want` | open |
+| Read | `want` | closed (completed) |
+| Skipped | `stale` | closed (not planned) |
 
-- New articles from the previous day that I did not move to "To read" are labeled `stale` and closed by the next morning's routine
+- New articles from the previous day that I did not mark `want` are labeled `stale` and closed by the next morning's routine
 - To tell skipped articles apart from read ones, they differ in both the close reason and the `stale` label
-- Articles moved to "To read" stay open until I finish reading them
+- Articles marked `want` stay open until I finish reading them
 
 ## Operation
 
