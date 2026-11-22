@@ -87,7 +87,8 @@ feeds:
   - name: Datadog Engineering
     url: https://www.datadoghq.com/blog/engineering/index.xml
 
-# Sites without an RSS feed. The routine finds their new posts with a site-restricted web search.
+# Sites without an RSS feed. url is the listing page of posts; the routine opens it directly
+# and falls back to a site-restricted web search if it cannot be read.
 sites:
   - name: Anthropic Engineering
     url: https://www.anthropic.com/engineering
