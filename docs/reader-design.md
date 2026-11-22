@@ -95,8 +95,8 @@ The same as the first version, plus sign-in.
 | Tab | Shows | Buttons |
 |---|---|---|
 | 今日 | Open `article` issues without `want` | Heart: add `want` |
-| 読みたい | Open issues with `want` | 読んだ: close as completed / filled heart: remove `want` |
-| 読んだ | Issues with `want` closed as completed, the latest 50 | 読みたいに戻す: reopen |
+| 読みたい | Open issues with `want` | Check: close as completed / filled heart: remove `want` |
+| 読んだ | Issues with `want` closed as completed, the latest 50 | Filled check: reopen |
 
 - Each article is a card with its source, date, title (linked to the article), themes and summary. The AWS digest shows its announcements as links grouped by theme
 - Every button can be undone from the message that appears afterwards
