@@ -41,26 +41,41 @@ function formatDate(s) {
 
 // ---- Data ----
 
+class SignInNeeded extends Error {}
+
+async function call(path, options) {
+  const res = await fetch(path, { credentials: "same-origin", ...options });
+  if (res.status === 401) throw new SignInNeeded();
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.error || res.statusText);
+  return body;
+}
+
 async function load(view) {
-  const res = await fetch(`/api/views/${view}`);
-  if (!res.ok) throw new Error((await res.json()).error || res.statusText);
-  state.data[view] = (await res.json()).cards;
+  state.data[view] = (await call(`/api/views/${view}`)).cards;
 }
 
 async function loadAll() {
   const results = await Promise.allSettled(views.map(load));
+  if (results.some((r) => r.status === "rejected" && r.reason instanceof SignInNeeded)) return showSignIn();
   results.forEach((r, i) => {
     if (r.status === "rejected") state.data[views[i]] = { error: r.reason.message };
   });
   render();
 }
 
-async function act(number, action) {
-  const res = await fetch(`/api/issues/${number}/${action}`, {
-    method: "POST",
-    headers: { "X-Distill": "1" },
-  });
-  if (!res.ok) throw new Error((await res.json()).error || res.statusText);
+function act(number, action) {
+  return call(`/api/issues/${number}/${action}`, { method: "POST" });
+}
+
+function showSignIn() {
+  $("signin").hidden = false;
+  $("tabs").hidden = true;
+  $("who").hidden = true;
+  $("lead").textContent = "";
+  $("filters").hidden = true;
+  $("list").replaceChildren();
+  hideToast();
 }
 
 // ---- Actions (optimistic, with undo) ----
@@ -91,6 +106,7 @@ async function run(card, action, el, { isUndo = false } = {}) {
     if (!isUndo) showToast(moves[action].message, () => run(card, moves[action].undo, null, { isUndo: true }));
     else hideToast();
   } catch (e) {
+    if (e instanceof SignInNeeded) return showSignIn();
     moveLocal(card, moves[action].undo);
     render();
     showToast(`失敗しました: ${e.message}`);
@@ -250,5 +266,26 @@ for (const tab of document.querySelectorAll(".tabs button")) {
   });
 }
 
-render();
-loadAll();
+$("logout").addEventListener("click", async () => {
+  await fetch("/auth/logout", { method: "POST", credentials: "same-origin" }).catch(() => {});
+  location.reload();
+});
+
+// The session check comes first, so that an expired GitHub token is refreshed
+// by one request before the views load in parallel.
+async function start() {
+  try {
+    const me = await call("/api/me");
+    $("who-login").textContent = me.login;
+    $("who").hidden = false;
+    $("tabs").hidden = false;
+  } catch (e) {
+    if (e instanceof SignInNeeded) return showSignIn();
+    $("list").replaceChildren(h("p", { class: "error" }, `読み込めませんでした: ${e.message}`));
+    return;
+  }
+  render();
+  loadAll();
+}
+
+start();
