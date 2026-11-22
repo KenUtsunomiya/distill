@@ -93,6 +93,10 @@ Create one user Project named `distill` and put the distill repository's issues 
 
 The routine only creates issues. Adding them to the Project and setting their Status is left to the workflows.
 
+## Reader page
+
+Issues and the board were hard to read, so [app/](../app/README.md) has a local page that lists the articles with their summaries and adds `want` or closes an issue with one button. It runs on my PC with the `gh` login and changes only labels and issue state, so the routine and the label-based tallies are unaffected.
+
 ## Deciding what is stale
 
 - Target: open issues with the `article` label that were created before the current run and have neither `want` nor `stale`
