@@ -10,6 +10,7 @@ The routine runs every day at 8:00 JST and does the following, in order.
 2. Collects candidates from the themes, RSS feeds and search-only sites in [config/sources.yaml](../config/sources.yaml)
 3. Drops candidates that do not match a theme, were delivered before, or whose links do not open
 4. Creates one issue per remaining article
+5. Creates one digest issue of the on-theme AWS What's New announcements
 
 The instruction registered in the routine is a single line. The actual steps live in [routine/prompt.md](../routine/prompt.md), so both the steps and the themes can be changed by editing files in this repository.
 
@@ -23,6 +24,7 @@ The instruction registered in the routine is a single line. The actual steps liv
 | `via:search` | Found via web search, not RSS. Shows whether the search is pulling its weight. Articles from RSS get no label | By hand, once |
 | `want` | An article I want to read. This is the mark the routine looks at | By hand, once |
 | `stale` | An article I did not mark `want`, closed by the routine | By hand, once |
+| `aws-digest` | The daily digest of AWS What's New announcements. Also has `article`, so `want` and `stale` work the same way | By hand, once |
 
 - Selection trends are counted by filtering on labels. For example, count the articles marked `want` per `source:`, or see which `theme:` tends to go `stale`
 - `source:` is a host name, so it cannot tell apart writers on a site like medium.com that hosts many of them. Deal with that if it becomes a problem
@@ -33,6 +35,7 @@ Labels to create first:
 gh label create article --color 0E8A16 --description "Article delivered by the routine"
 gh label create want --color 1D76DB --description "Marked to read; kept open by the routine"
 gh label create stale --color BFBFBF --description "Closed without being marked want"
+gh label create aws-digest --color FF9900 --description "Daily digest of AWS What's New announcements"
 gh label create via:search --color C5DEF5
 gh label create theme:agent-design --color FBCA04 --description "AI agent design"
 gh label create theme:tool-design --color FBCA04 --description "Tool design"
@@ -62,6 +65,17 @@ URL: https://example.com/posts/agent-tools
 ```
 
 URLs are normalized by removing tracking parameters such as `utm_` and any trailing `#...`.
+
+## AWS digest
+
+AWS What's New publishes dozens of announcements a day (about 100 from 2026-11-19 to 11-21). One issue each would bury the articles, and each announcement is only a few lines, so the on-theme ones go into one issue per day.
+
+- Title: `AWS What's New <YYYY-MM-DD>` (JST)
+- Body: announcements grouped by theme, one line each with a link and a one-sentence summary
+- Kept: announcements that change how systems are designed, built or operated, on a theme
+- Dropped: region expansions, Partner Central, Marketplace, billing and pricing, minor version support
+- Duplicates: compared against the links in earlier `aws-digest` issues. Digests are left out of the article duplicate check, since they have no `URL:` line
+- AWS blog posts are still delivered one by one as articles. For posts from aws.amazon.com, product and feature posts on a theme are kept, unlike other sources
 
 ## Projects kanban board
 
