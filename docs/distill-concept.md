@@ -68,6 +68,7 @@ Themes are not limited to AI.
   - Keeping them apart makes it easier to move this somewhere else later
 - I read articles on my PC. They do not need to be delivered to Slack
 - Store each article as one issue in this repository's GitHub Issues, and manage them on a GitHub Projects kanban board
+  - Issues turned out to be hard to read, so a local reader page ([app/](../app/README.md)) shows them and marks `want` with one button (2026-11-22)
   - The routine already works against GitHub, so no other service needs to be connected
   - Marking an article is just adding a label
   - With sources and themes as labels, tallying selections is just filtering by label
