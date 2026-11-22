@@ -8,8 +8,8 @@ const leads = {
   done: (n) => `最近読んだ記事 ${n} 件です。`,
 };
 const empties = {
-  today: "今日の新しい記事はありません。",
-  toread: "読みたい記事はまだありません。「今日」のタブでハートを付けてください。",
+  today: "新着の記事はありません。",
+  toread: "読みたい記事はまだありません。「新着」のタブでハートを付けてください。",
   done: "読み終わった記事はまだありません。",
 };
 
@@ -82,7 +82,7 @@ function showSignIn() {
 
 const moves = {
   want: { from: "today", to: "toread", undo: "unwant", message: "「読みたい」に追加しました" },
-  unwant: { from: "toread", to: "today", undo: "want", message: "「今日」に戻しました" },
+  unwant: { from: "toread", to: "today", undo: "want", message: "「新着」に戻しました" },
   done: { from: "toread", to: "done", undo: "reopen", message: "「読んだ」に移しました" },
   reopen: { from: "done", to: "toread", undo: "done", message: "「読みたい」に戻しました" },
 };
@@ -168,8 +168,8 @@ function markButton(card, el, { kind, on, onAction, offAction, onLabel, offLabel
   return button;
 }
 
-// Heart = want (outlined on 今日, filled on 読みたい). Check = read (open on
-// 読みたい, filled on 読んだ).
+// Heart = want (outlined on 新着, filled on the heart tab). Check = read (open on
+// the heart tab, filled on the check tab).
 function buttonsFor(card, el) {
   const heart = (on) =>
     markButton(card, el, { kind: "heart", on, onAction: "want", offAction: "unwant", onLabel: "読みたいから外す", offLabel: "読みたい" });

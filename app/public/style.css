@@ -129,6 +129,13 @@ button { font: inherit; color: inherit; }
   border-bottom-color: var(--accent);
 }
 
+.tabs button { display: inline-flex; align-items: center; }
+
+.tab-icon { width: 20px; height: 20px; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.heart-icon { fill: var(--heart); stroke: var(--heart); }
+.check-icon .ring { fill: var(--accent); stroke: var(--accent); }
+.check-icon .tick { fill: none; stroke: var(--accent-text); stroke-width: 2.2; }
+
 .count {
   margin-left: 6px;
   font-size: 12px;
