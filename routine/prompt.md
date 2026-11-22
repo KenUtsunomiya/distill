@@ -21,12 +21,20 @@ Leave issues with the `want` label alone. They stay open until I finish reading 
 Read [config/sources.yaml](../config/sources.yaml).
 
 - **RSS**: from each feed in `feeds`, take the articles published in the last 48 hours
-- **Web search**: search with the `queries` of each theme in `themes`, and take the articles published in the last 7 days
-- **Sites**: for each site in `sites`, run a web search restricted to its `url` (for example `site:uber.com/blog/engineering`), and take the articles published in the last 7 days. Treat them as found via web search
+- **Web search**: run **every** query of **every** theme in `themes`, one search per query. Do not skip a query, even if earlier searches found nothing. Take the articles published in the last 7 days
+- **Sites**: open each site's `url` in `sites` directly. It is a listing page of the site's posts. Take the posts on it published in the last 7 days. Treat them as found via web search. If the listing page cannot be read, fall back to a web search restricted to the site (for example `site:uber.com/blog/engineering`)
 
 If one feed or search fails, continue with the rest.
 
-Search results carry no publish dates. Do not drop a result for that reason alone: open each result that looks like an article on a theme, and find its date in the page (a visible date, the `article:published_time` meta tag, or `datePublished` in JSON-LD). Drop it only if the page has no date or the date is too old.
+#### Checking dates of search results
+
+Search results carry no publish dates, so a missing date in the results is never a reason to drop one. For every result that looks like an article on a theme:
+
+1. Open the page (WebFetch, or `curl` if WebFetch returns only navigation)
+2. Find its publish date in the page: a visible date, the `article:published_time` meta tag, or `datePublished` in JSON-LD
+3. Drop it only if the page has no date or the date is older than 7 days
+
+Skip without opening only results that are clearly not single articles: listing or tag pages, repositories, PDFs of papers, product pages and docs.
 
 ### 3. Narrow down the candidates
 
@@ -72,4 +80,5 @@ Finish with a short report of:
 
 - the number of issues marked stale
 - the number of issues created, broken down by theme
+- the number of search queries run out of the total, and the number of search results opened to check their date
 - any feeds or searches that failed, and anything you could not check
