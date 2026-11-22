@@ -6,7 +6,7 @@ How to build MVP 1 of the [concept](distill-concept.md) with a Claude Code cloud
 
 The routine runs every day at 8:00 JST and does the following, in order.
 
-1. Labels `stale` and closes the earlier new articles that I did not move to "To read"
+1. Labels `stale` and closes the earlier new articles that I did not mark `want`
 2. Collects candidates from the themes, RSS feeds and search-only sites in [config/sources.yaml](../config/sources.yaml)
 3. Drops candidates that do not match a theme, were delivered before, or whose links do not open
 4. Creates one issue per remaining article
@@ -21,16 +21,18 @@ The instruction registered in the routine is a single line. The actual steps liv
 | `theme:<slug>` | The article's theme. More than one is allowed | By hand, once. Also by hand when adding a theme |
 | `source:<host>` | The article's site, as the host name without `www.` (e.g. `source:simonwillison.net`) | By the routine, when missing |
 | `via:rss` / `via:search` | How the article was found. Shows whether the search is pulling its weight | By hand, once |
-| `stale` | An article I did not move to "To read", closed by the routine | By hand, once |
+| `want` | An article I want to read. This is the mark the routine looks at | By hand, once |
+| `stale` | An article I did not mark `want`, closed by the routine | By hand, once |
 
-- Selection trends are counted by filtering on labels. For example, count the articles moved to "To read" per `source:`, or see which `theme:` tends to go `stale`
+- Selection trends are counted by filtering on labels. For example, count the articles marked `want` per `source:`, or see which `theme:` tends to go `stale`
 - `source:` is a host name, so it cannot tell apart writers on a site like medium.com that hosts many of them. Deal with that if it becomes a problem
 
 Labels to create first:
 
 ```bash
 gh label create article --color 0E8A16 --description "Article delivered by the routine"
-gh label create stale --color BFBFBF --description "Closed without being moved to To read"
+gh label create want --color 1D76DB --description "Marked to read; kept open by the routine"
+gh label create stale --color BFBFBF --description "Closed without being marked want"
 gh label create via:rss --color C5DEF5
 gh label create via:search --color C5DEF5
 gh label create theme:agent-design --color FBCA04 --description "AI agent design"
@@ -64,23 +66,28 @@ URLs are normalized by removing tracking parameters such as `utm_` and any trail
 
 ## Projects kanban board
 
-Create one user Project and put the distill repository's issues on it.
+The routine's GitHub tools cannot read Project Status, so the mark is the `want` label, not a kanban column. The board is only a view, and the routine never looks at it.
 
-- **Status field**: three options, "New", "To read" and "Done"
+Create one user Project named `distill` and put the distill repository's issues on it.
+
+- **Status field**: two options, "New" and "Done"
 - **Built-in workflows**
   - Auto-add to project: automatically add `is:issue label:article`
   - Item added to project: set Status to "New"
   - Auto-close issue: close the issue when Status becomes "Done" (closed as completed)
   - Item closed: **turn it off**. If it stays on, articles closed as `stale` also move to "Done"
-- **Board filter**: `-label:stale`, so skipped articles are not shown
+- **Views**
+  - Today: filter `is:open -label:want`, the new articles to pick from
+  - To read: filter `is:open label:want`
 
 The routine only creates issues. Adding them to the Project and setting their Status is left to the workflows.
 
 ## Deciding what is stale
 
-- Target: open issues with the `article` label that were created before the current run and whose Status is "New"
+- Target: open issues with the `article` label that were created before the current run and have neither `want` nor `stale`
 - Action: add the `stale` label and close the issue as not planned
-- Articles in "To read" stay open until I finish reading them, so leave them alone
+- Articles marked `want` stay open until I finish reading them, so leave them alone
+- Reading Project Status with a separate token was considered and dropped: the token would have to be stored in the cloud environment as a plain value, and I keep my secrets in 1Password
 
 ## Detecting duplicates
 
@@ -89,13 +96,18 @@ The routine only creates issues. Adding them to the Project and setting their St
 
 ## Things to check first
 
-It has not been checked yet whether the routine's environment can do the following. Run the routine once by hand to check.
+Checks for whether the routine's environment can do the following. The first manual run was on 2026-11-21.
 
 1. Create issues and labels in the distill repository
+   - Works: the routine uses the GitHub MCP tools (`mcp__github__*`), not `gh`. The second run on 2026-11-21 created #2 with all its labels, including a new `source:datadoghq.com` label
 2. Read the Status of Project items. Needed to decide what is stale
-   - If it cannot, use a `want` label instead of the kanban column as the mark, and target "open issues with neither `want` nor `stale`"
+   - Cannot: a one-off check on 2026-11-21 found no Projects tools among the routine's GitHub tools. Switched to the `want` label
 3. Fetch RSS feeds and article pages (no network restrictions)
+   - Works after switching the Default environment to full network access. Before that, most feed hosts failed DNS. Search results point to arbitrary hosts, so an allowlist is not enough
+   - aws.amazon.com article pages come back as navigation only through WebFetch, so their bodies cannot be checked
+   - Web search returns results without publish dates, so no article from search has been kept yet
 4. Run at 8:00 JST. If the schedule is in UTC, set it to 23:00
+   - Done: the routine's schedule is `0 23 * * *` (UTC)
 
 ## Not decided yet
 
