@@ -69,8 +69,6 @@ Create one issue per remaining article.
   - every matching `theme:<slug>`
   - `source:<host>`, the host name without `www.`. Create the label if it does not exist
 
-The Project's workflows add issues to the Project and set their Status, so the routine does not.
-
 ### 5. Create the AWS digest
 
 Collect AWS feature announcements into one issue, separately from the articles above.
