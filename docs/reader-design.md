@@ -1,51 +1,96 @@
 # Design of the reader page
 
-A page for reading the article issues the routine delivers and marking them with one button, hosted on GitHub Pages so it works from a phone too. As of 2026-11-22.
+A page for reading the article issues the routine delivers and marking them with one button, hosted on Cloudflare Workers so it works from a phone too. As of 2026-11-22.
 
 ## Why
 
 - Issues and the Projects board are hard to read: the summaries are only visible after opening each issue
-- The first version ([PR #26](https://github.com/KenUtsunomiya/distill/pull/26)) was a local server that used the `gh` login. It only works while it runs on my PC, so it moves to a static page that needs no server
+- The first version ([PR #26](https://github.com/KenUtsunomiya/distill/pull/26)) was a local server that used the `gh` login. It only works while it runs on my PC, so it moves to a hosted page
+- A static page on GitHub Pages with a token pasted into the browser was considered and dropped: I do not want a long-lived token kept in the browser
 
 ## What stays the same
 
 - Issues are the only data. The page reads and changes them through the GitHub API, so the routine, the issue format and the label-based tallies do not change
 - The mark is still the `want` label, and an article I read is still closed as completed ([concept](distill-concept.md#article-states))
 
-## Hosting
+## Overview
 
-- GitHub Pages, deployed by a GitHub Actions workflow from `app/` on main. The page lives at https://kenutsunomiya.github.io/distill/
-- The repository's Pages source is set to "GitHub Actions"
-- Plain HTML, CSS and JavaScript with no build step and no packages, as in the first version
-- The local server (`app/server.mjs`) is removed. To work on the page locally, serve `app/` with any static server, such as `python3 -m http.server`
+```
+Browser ──(session cookie)──▶ Cloudflare Worker ──(user token)──▶ GitHub API
+                                   │
+                                   └─ KV: session id → GitHub tokens
+```
 
-## Authentication
+- One Worker serves both the page (static assets from `app/public/`) and the API under `/api/`, on one origin
+- I sign in with GitHub through a GitHub App. The GitHub tokens stay in the Worker's KV storage, and the browser only gets a random session id in an `HttpOnly` cookie, which scripts cannot read
+- The Worker allows only my GitHub account, and only the operations the page needs
 
-The page calls `api.github.com` straight from the browser, which GitHub allows (CORS).
+## GitHub App
 
-- **Reading** needs no token, since the repository is public. Without a token the page is read-only, and GitHub allows 60 requests an hour per IP address, enough for opening the page a few times
-- **Marking** needs a fine-grained personal access token, pasted into the page's settings once per device
-  - Repository access: only `KenUtsunomiya/distill`
-  - Permissions: Issues, read and write (Metadata, read-only, is added automatically). Nothing else
-  - Expiry: one year. When it expires, the page says so and goes back to read-only
-  - Kept in 1Password, so it can be filled in on each device
-- The token is kept in that browser's `localStorage` and sent only to `api.github.com`. It is never put in the repository, a URL or the cloud
-- The settings let me remove the token from the device
+A GitHub App, not an OAuth App, because its token can be limited to one repository and one permission.
 
-### Protecting the token
+- Name: `distill reader`. Owned by my account, installable only on my account
+- Installed on `KenUtsunomiya/distill` only
+- Repository permissions: Issues, read and write (Metadata, read-only, is added automatically). Nothing else
+- "Expire user authorization tokens" on: the user token lasts 8 hours and comes with a refresh token that lasts 6 months
+- Callback URLs: `https://<worker host>/auth/callback`, and `http://localhost:8787/auth/callback` for local development
+- No webhook
+- The user token can only do what both the App and I may do, on the repositories the App is installed on, so even a leaked token reaches only this repository's issues
 
-A token in `localStorage` can be read by any script that runs on the page, so the page only runs its own code.
+## Signing in
 
-- A Content Security Policy in a `<meta>` tag: `default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src https://api.github.com; manifest-src 'self'; base-uri 'none'; form-action 'none'`
+1. The page has no session, so it shows a "GitHub でログイン" button
+2. `/auth/login` creates a random `state` and a PKCE verifier, keeps them in a short-lived `HttpOnly` cookie, and redirects to GitHub's authorize page
+3. GitHub sends me back to `/auth/callback`. The Worker checks `state`, exchanges the code for a user token with the App's client secret and the PKCE verifier, and reads `/user`
+4. If the login is not `ALLOWED_LOGIN` (`KenUtsunomiya`), the Worker throws the token away and refuses
+5. Otherwise it stores the tokens in KV under a random session id and sets the session cookie
+
+- When the user token has expired, the Worker uses the refresh token and stores the new pair. I sign in again only after the refresh token expires (6 months) or when I sign out
+- KV entries expire with the refresh token
+- "ログアウト" deletes the KV entry and the cookie
+- To cut off every device at once, revoke the App's authorization in GitHub's settings, or delete the KV entries
+
+## Secrets
+
+| Name | What | Where |
+|---|---|---|
+| `GITHUB_CLIENT_SECRET` | The App's client secret | Cloudflare Worker secret, set with `wrangler secret put`. The original is kept in 1Password |
+| GitHub user tokens | Issued at sign-in | KV only. Never sent to the browser or written to logs |
+
+The client secret alone cannot act on GitHub: it only works together with a code that GitHub issues after I sign in and approve. Nothing secret is committed to the repository. `GITHUB_CLIENT_ID`, `ALLOWED_LOGIN` and `REPO` are plain settings in `wrangler.jsonc`.
+
+## API
+
+All routes need a valid session, except the sign-in routes and the static files.
+
+| Route | Does |
+|---|---|
+| `GET /api/me` | The signed-in login, so the page can show it |
+| `GET /api/views/today` | Open `article` issues without `want` |
+| `GET /api/views/toread` | Open issues with `article` and `want` |
+| `GET /api/views/done` | Issues with `article` and `want` closed as completed, the latest 50 |
+| `POST /api/issues/:n/want` | Add `want` |
+| `POST /api/issues/:n/unwant` | Remove `want` |
+| `POST /api/issues/:n/done` | Close as completed |
+| `POST /api/issues/:n/reopen` | Reopen |
+
+The Worker parses the issue bodies into cards, as the local server did, and reads theme names from `config/sources.yaml` through the GitHub API.
+
+## Security
+
+- **Allowed account**: the Worker checks the login at sign-in and keeps it in the session
+- **Allowed operations**: the API only changes issues in `REPO` that have the `article` label, and only the four actions above. There is no generic proxy to the GitHub API
+- **Cross-site requests**: the session cookie is `Secure`, `HttpOnly` and `SameSite=Lax`. Changes are `POST` only and also need an `Origin` header equal to the Worker's own origin
+- **Untrusted text**: issue text comes from third-party articles, so the page only ever inserts it as text, never as HTML. Links are kept only when they are `http` or `https`
+- **Headers** on every response:
+  - `Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`
+  - `X-Content-Type-Options: nosniff`
+  - `Referrer-Policy: no-referrer`
 - No third-party scripts, styles or fonts
-- Issue text comes from third-party articles, so it is only ever inserted as text, never as HTML. Links are kept only when they are `http` or `https`
-- Changes are refused for issues without the `article` label
-
-GitHub Pages cannot set response headers, so `frame-ancestors` (which only works as a header) is not available. The page has no action that a click inside a frame could trigger without me seeing the button, so this is accepted.
 
 ## Screens
 
-The same as the first version.
+The same as the first version, plus sign-in.
 
 | Tab | Shows | Buttons |
 |---|---|---|
@@ -55,14 +100,31 @@ The same as the first version.
 
 - Each article is a card with its source, date, title (linked to the article), themes and summary. The AWS digest shows its announcements as links grouped by theme
 - Every button can be undone from the message that appears afterwards
-- Theme names come from `config/sources.yaml`, read through the GitHub API
-- A settings screen to paste, check and remove the token. It shows the token's expiry date when GitHub returns it
+- Without a session, the page shows only the sign-in button. The header shows the signed-in login and a sign-out button
 - It can be added to a phone's home screen (a web app manifest and an icon)
+
+## Code and deployment
+
+- `app/`: `wrangler.jsonc`, `src/worker.js` (the Worker) and `public/` (the page). Plain JavaScript, no framework. The only package is `wrangler`, as a development dependency
+- The local server (`app/server.mjs`) is removed
+- Local development: `npx wrangler dev` with a `.dev.vars` file for the client secret. `.dev.vars` is ignored by git
+- Deployment: Cloudflare Workers Builds, connected to this repository, deploys `app/` on every push to main. Cloudflare reads the repository through its own GitHub integration, so no Cloudflare token is stored on GitHub
+- Free plans of Workers and KV are enough
+
+## Setup, done by hand once
+
+1. Create a Cloudflare account, and run `npx wrangler login`
+2. Create the KV namespace (`npx wrangler kv namespace create SESSIONS`) and put its id in `wrangler.jsonc`
+3. Create the GitHub App with the settings above, install it on `distill`, and generate a client secret. Keep the secret in 1Password
+4. Put the client id in `wrangler.jsonc`, and the secret in Cloudflare with `npx wrangler secret put GITHUB_CLIENT_SECRET`
+5. Connect the repository in Workers Builds, with `app/` as the root directory
+6. Add the Worker's URL to the App's callback URLs
 
 ## Projects board
 
-Fine-grained tokens are not expected to be able to change a Project owned by a user account (to be checked when building it). If they cannot, the page no longer sets the Project's Status when it closes an issue. Closed issues stay "New" on the board, but both views only show open issues, so the board still looks right. The Status field may be removed later if the board goes unused.
+The App has no permission for Projects, so the page does not set the Project's Status when it closes an issue. Closed issues stay "New" on the board, but both views only show open issues, so the board still looks right.
 
 ## Not decided yet
 
 - Whether to keep the Projects board at all, now that the page covers both of its views
+- Whether to use a custom domain instead of `*.workers.dev`
