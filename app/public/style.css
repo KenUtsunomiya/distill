@@ -67,7 +67,7 @@ button { font: inherit; color: inherit; }
 }
 
 .top-inner {
-  max-width: 760px;
+  max-width: 880px;
   margin: 0 auto;
   padding: 14px 20px 0;
   display: flex;
@@ -107,7 +107,7 @@ button { font: inherit; color: inherit; }
 .brand {
   margin: 0;
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.02em;
 }
 
@@ -147,7 +147,7 @@ button { font: inherit; color: inherit; }
 /* ---- Page ---- */
 
 .page {
-  max-width: 760px;
+  max-width: 880px;
   margin: 0 auto;
   padding: 20px 20px 120px;
 }
@@ -204,13 +204,15 @@ button { font: inherit; color: inherit; }
   margin-bottom: 4px;
 }
 
-.meta .source { font-weight: 600; color: var(--text); }
+.meta .source { font-weight: 500; color: var(--text); }
 
 .title {
-  margin: 0 0 10px;
+  margin: 0 0 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--faint);
   font-size: 19px;
   line-height: 1.55;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .title a { text-decoration: none; }
@@ -254,7 +256,7 @@ button { font: inherit; color: inherit; }
   border-radius: 10px;
   padding: 6px 16px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 }
 
@@ -322,7 +324,7 @@ button { font: inherit; color: inherit; }
 .digest h3 {
   margin: 18px 0 6px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--accent-ink);
 }
 
@@ -336,7 +338,7 @@ button { font: inherit; color: inherit; }
 
 .digest li:last-child { border-bottom: 0; }
 
-.digest li a { font-weight: 600; text-decoration: none; }
+.digest li a { font-weight: 500; text-decoration: none; }
 .digest li a:hover { text-decoration: underline; }
 
 .digest li .what { display: block; color: var(--muted); font-size: 14px; line-height: 1.7; }
@@ -385,7 +387,7 @@ button { font: inherit; color: inherit; }
   border: 0;
   background: none;
   color: var(--bg);
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: underline;
   cursor: pointer;
   padding: 4px 6px;
