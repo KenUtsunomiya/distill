@@ -1,58 +1,26 @@
-# Themes, RSS feeds and search-only sites the routine collects articles from.
+# Themes, RSS feeds and sites without feeds that the routine collects articles from.
 # When adding a theme, also create the matching theme:<slug> label (docs/routine-design.md).
-# Japanese queries are kept on purpose, to find articles written in Japanese.
+# Web search was dropped on 2026-11-22: it only returned old, evergreen pages.
 
 themes:
   - slug: agent-design
     name: AI agent design
-    queries:
-      - AI agent architecture design patterns
-      - building LLM agents lessons learned
-      - AIエージェント 設計
   - slug: tool-design
     name: Tool design
-    queries:
-      - tool design for LLM agents
-      - function calling tool definitions best practices
   - slug: mcp
     name: MCP
-    queries:
-      - Model Context Protocol MCP server
-      - MCP サーバー
   - slug: evals
     name: Evals
-    queries:
-      - LLM evals agent evaluation
-      - evaluating AI agents in production
   - slug: context-engineering
     name: Context engineering
-    queries:
-      - context engineering LLM agents
-      - コンテキストエンジニアリング
   - slug: large-scale-systems
     name: Large-scale systems
-    queries:
-      - distributed systems engineering blog scaling
-      - large scale system architecture postmortem
-      - 大規模システム アーキテクチャ
   - slug: data-storage
     name: Data storage
-    queries:
-      - database internals storage engine
-      - distributed database consistency replication
-      - データベース 内部構造
   - slug: observability
     name: Observability
-    queries:
-      - observability OpenTelemetry tracing in production
-      - logs metrics traces cost at scale
-      - オブザーバビリティ 運用
   - slug: kubernetes
     name: Kubernetes
-    queries:
-      - Kubernetes operations at scale
-      - Kubernetes controller operator design
-      - Kubernetes 運用
 
 # Feeds confirmed to be fetchable on 2026-10-24.
 feeds:
@@ -115,10 +83,8 @@ feeds:
 aws_whats_new:
   url: https://aws.amazon.com/about-aws/whats-new/recent/feed/
 
-# Sites without an RSS feed. url is the listing page of posts; the routine opens it directly
-# and falls back to a site-restricted web search if it cannot be read.
+# Sites without an RSS feed. url is the listing page of posts; the routine opens it directly.
+# Uber Engineering was removed on 2026-11-22: its listing page returns 406.
 sites:
   - name: Anthropic Engineering
     url: https://www.anthropic.com/engineering
-  - name: Uber Engineering
-    url: https://www.uber.com/blog/engineering/
