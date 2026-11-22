@@ -127,4 +127,4 @@ The App has no permission for Projects, so the page does not set the Project's S
 ## Not decided yet
 
 - Whether to keep the Projects board at all, now that the page covers both of its views
-- Whether to use a custom domain instead of `*.workers.dev`
+- Whether to use a custom domain instead of https://distill-reader.distill-reader.workers.dev, where it runs since 2026-11-22
