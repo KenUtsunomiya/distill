@@ -70,7 +70,7 @@ Create one issue per remaining article.
   - `article`
   - every matching `theme:<slug>`
   - `source:<host>`, the host name without `www.`. Create the label if it does not exist
-  - `via:rss` or `via:search`. If found by both, use `via:rss`
+  - `via:search`, only if the article was found via web search and not via RSS. Articles found via RSS get no `via:` label
 
 The Project's workflows add issues to the Project and set their Status, so the routine does not.
 
