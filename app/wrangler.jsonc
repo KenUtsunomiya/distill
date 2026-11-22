@@ -12,12 +12,12 @@
   },
   "kv_namespaces": [
     // Set the id after `npx wrangler kv namespace create SESSIONS`.
-    { "binding": "SESSIONS", "id": "00000000000000000000000000000000" }
+    { "binding": "SESSIONS", "id": "fccca8ecfb2f490ca24bfea5b85f4661" }
   ],
   "vars": {
     // The GitHub App's client id (not a secret). The client secret is a Worker
     // secret: `npx wrangler secret put GITHUB_CLIENT_SECRET`.
-    "GITHUB_CLIENT_ID": "",
+    "GITHUB_CLIENT_ID": "Iv23liBiA2k5AgfukvDY",
     "ALLOWED_LOGIN": "KenUtsunomiya",
     "REPO": "KenUtsunomiya/distill"
   },
