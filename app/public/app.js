@@ -3,13 +3,13 @@
 
 const views = ["today", "toread", "done"];
 const leads = {
-  today: (n) => `未選択の記事が ${n} 件あります。「読みたい」を押さなかった記事は、翌朝 8:00 に閉じられます。`,
+  today: (n) => `未選択の記事が ${n} 件あります。ハートを付けなかった記事は、翌朝 8:00 に閉じられます。`,
   toread: (n) => `読みたい記事が ${n} 件あります。読み終わったら「読んだ」を押してください。`,
   done: (n) => `最近読んだ記事 ${n} 件です。`,
 };
 const empties = {
   today: "今日の新しい記事はありません。",
-  toread: "読みたい記事はまだありません。「今日」のタブで選んでください。",
+  toread: "読みたい記事はまだありません。「今日」のタブでハートを付けてください。",
   done: "読み終わった記事はまだありません。",
 };
 
@@ -133,11 +133,43 @@ function hideToast() {
 
 // ---- Rendering ----
 
+const HEART = "M12 20.5s-7.5-4.6-9.6-9.2C1 8.2 2.9 4.5 6.6 4.5c2.1 0 3.6 1.2 5.4 3.2 1.8-2 3.3-3.2 5.4-3.2 3.7 0 5.6 3.7 4.2 6.8-2.1 4.6-9.6 9.2-9.6 9.2z";
+
+function heartIcon() {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("aria-hidden", "true");
+  const path = document.createElementNS(ns, "path");
+  path.setAttribute("d", HEART);
+  svg.append(path);
+  return svg;
+}
+
+// The heart is the want mark: outlined on 今日, filled on 読みたい. Pressing it toggles want.
+function heartButton(card, el) {
+  const on = state.view === "toread";
+  const button = h("button", {
+    class: "heart",
+    type: "button",
+    "aria-pressed": String(on),
+    "aria-label": on ? "読みたいから外す" : "読みたい",
+    title: on ? "読みたいから外す" : "読みたい",
+  });
+  button.append(heartIcon());
+  button.addEventListener("click", () => {
+    button.setAttribute("aria-pressed", String(!on));
+    button.classList.add("pop");
+    run(card, on ? "unwant" : "want", el());
+  });
+  return button;
+}
+
 function buttonsFor(card, el) {
   const btn = (label, action, primary) =>
     h("button", { class: primary ? "btn primary" : "btn", type: "button", onclick: () => run(card, action, el()) }, label);
-  if (state.view === "today") return [btn("読みたい", "want", true)];
-  if (state.view === "toread") return [btn("外す", "unwant"), btn("読んだ", "done", true)];
+  if (state.view === "today") return [heartButton(card, el)];
+  if (state.view === "toread") return [heartButton(card, el), btn("読んだ", "done", true)];
   return [btn("読みたいに戻す", "reopen")];
 }
 
