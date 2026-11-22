@@ -86,6 +86,34 @@ feeds:
     url: https://opentelemetry.io/blog/index.xml
   - name: Datadog Engineering
     url: https://www.datadoghq.com/blog/engineering/index.xml
+  # Added on 2026-11-22. Company engineering blogs confirmed to be fetchable.
+  - name: AWS Blog (Japanese)
+    url: https://aws.amazon.com/jp/blogs/news/feed/
+  - name: Hugging Face Blog
+    url: https://huggingface.co/blog/feed.xml
+  - name: Google Research Blog
+    url: https://research.google/blog/rss/
+  - name: Sourcegraph Blog
+    url: https://sourcegraph.com/blog/rss.xml
+  - name: GitHub Blog (Engineering)
+    url: https://github.blog/engineering/feed/
+  - name: Grafana Labs Blog
+    url: https://grafana.com/blog/index.xml
+  - name: PlanetScale Blog
+    url: https://planetscale.com/blog/feed.atom
+  - name: Discord Blog
+    url: https://discord.com/blog/rss.xml
+  - name: Pinterest Engineering
+    url: https://medium.com/feed/pinterest-engineering
+  - name: SmartHR Tech Blog
+    url: https://tech.smarthr.jp/feed
+  - name: LayerX Tech Blog
+    url: https://tech.layerx.co.jp/feed
+
+# AWS feature announcements. Not delivered one by one: the routine puts the on-theme ones
+# into one digest issue per day (routine/prompt.md, step 5).
+aws_whats_new:
+  url: https://aws.amazon.com/about-aws/whats-new/recent/feed/
 
 # Sites without an RSS feed. url is the listing page of posts; the routine opens it directly
 # and falls back to a site-restricted web search if it cannot be read.

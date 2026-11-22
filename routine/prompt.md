@@ -16,6 +16,8 @@ For each open issue with the `article` label that has neither the `want` label n
 
 Leave issues with the `want` label alone. They stay open until I finish reading them.
 
+AWS digest issues (the `aws-digest` label, see step 5) are treated the same way.
+
 ### 2. Collect candidates
 
 Read [config/sources.yaml](../config/sources.yaml).
@@ -40,8 +42,8 @@ Skip without opening only results that are clearly not single articles: listing 
 
 Drop candidates in this order.
 
-1. **Duplicates**: fetch every issue with the `article` label, open and closed, and drop candidates whose URL matches the `URL:` on the first line of an issue body. Compare URLs after removing tracking parameters such as `utm_` and any trailing `#...`. Also merge duplicates among this run's candidates
-2. **Off-theme**: drop anything that fits none of the `themes`. Topics near a theme are still dropped if they have little to do with it (model announcements alone, funding news, product launches without technical content and so on)
+1. **Duplicates**: fetch every issue with the `article` label, open and closed, except those with `aws-digest`, and drop candidates whose URL matches the `URL:` on the first line of an issue body. Compare URLs after removing tracking parameters such as `utm_` and any trailing `#...`. Also merge duplicates among this run's candidates
+2. **Off-theme**: drop anything that fits none of the `themes`. Topics near a theme are still dropped if they have little to do with it (model announcements alone, funding news, product launches without technical content and so on). Posts from AWS feeds (aws.amazon.com) are the exception: keep AWS product and feature posts if they relate to a theme, even when they read as announcements
 3. **Low quality**: pure product promotion, articles that only round up other articles, empty SEO articles, and articles whose body is behind a paywall
 4. **Unreachable**: fetch the page, and drop it if the article body cannot be read. If WebFetch returns only navigation or cuts off before the body (aws.amazon.com pages do this), fetch the HTML with `curl` and extract the text of the `<article>` or `<main>` element with `python3` before deciding
 
@@ -74,11 +76,41 @@ Create one issue per remaining article.
 
 The Project's workflows add issues to the Project and set their Status, so the routine does not.
 
-### 5. Report
+### 5. Create the AWS digest
+
+Collect AWS feature announcements into one issue, separately from the articles above.
+
+1. Fetch the `aws_whats_new` feed in [config/sources.yaml](../config/sources.yaml), and take the items published in the last 48 hours
+2. Fetch every issue with the `aws-digest` label, open and closed, and drop items whose link already appears in one of them
+3. Keep only items that relate to a theme in `themes`. Drop region expansions, Partner Central, Marketplace, billing and pricing, minor engine or runtime version support, and anything else that does not change how systems are designed, built or operated
+4. If nothing is left, create no digest
+5. Otherwise create one issue:
+
+   - **Title**: `AWS What's New <YYYY-MM-DD>`, with today's date in JST
+   - **Body**: group the items by theme, in the order of `themes`. Each item is one line with its title as a link to the announcement and a one-sentence summary. An item that fits several themes goes under the closest one
+
+     ```markdown
+     Digest of AWS What's New announcements from the last 48 hours that relate to the themes.
+
+     ## AI agent design
+
+     - [<title>](<link>): <one-sentence summary>
+
+     ## Observability
+
+     - [<title>](<link>): <one-sentence summary>
+     ```
+
+   - **Labels**: `article`, `aws-digest`, `source:aws.amazon.com`, and the `theme:<slug>` of every section in the body
+
+The announcement pages are short and come from the feed itself, so the rule about opening every URL does not apply to them. Use only the links in the feed, never a guessed one.
+
+### 6. Report
 
 Finish with a short report of:
 
 - the number of issues marked stale
 - the number of issues created, broken down by theme
+- whether an AWS digest was created, and how many announcements it holds out of how many in the feed
 - the number of search queries run out of the total, and the number of search results opened to check their date
 - any feeds or searches that failed, and anything you could not check
