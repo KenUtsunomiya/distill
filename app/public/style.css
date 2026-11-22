@@ -12,6 +12,7 @@
   --accent-soft: #d9f0f9;
   --chip: #d9f0f9;
   --heart: #e2457a;
+  --title: #1f6585;
   --shadow: 0 1px 2px rgba(21, 32, 41, 0.04), 0 4px 16px rgba(21, 32, 41, 0.05);
   color-scheme: light;
 }
@@ -29,6 +30,7 @@
     --accent-soft: #1f343e;
     --chip: #1f343e;
     --heart: #ff8db0;
+    --title: #a9e1f5;
     --shadow: none;
     color-scheme: dark;
   }
@@ -207,6 +209,7 @@ button { font: inherit; color: inherit; }
 .meta .source { font-weight: 500; color: var(--text); }
 
 .title {
+  color: var(--title);
   margin: 0 0 14px;
   padding-bottom: 14px;
   border-bottom: 1px solid var(--faint);
