@@ -67,7 +67,8 @@ Themes are not limited to AI.
   - That repository covers a wide range of my life and has a different purpose
   - Keeping them apart makes it easier to move this somewhere else later
 - I read articles on my PC, and pick them on my PC or phone. They do not need to be delivered to Slack
-- Store each article as one issue in this repository's GitHub Issues, and manage them on a GitHub Projects kanban board
+- Store each article as one issue in this repository's GitHub Issues
+  - At first they were managed on a GitHub Projects kanban board. The reader page replaced it on 2026-11-22
   - Issues turned out to be hard to read, so a reader page ([design](reader-design.md)) shows them and marks `want` with one button. It started as a local server and moves to Cloudflare Workers with GitHub sign-in so it also works from a phone, without keeping a token in the browser (2026-11-22)
   - The routine already works against GitHub, so no other service needs to be connected
   - Marking an article is just adding a label

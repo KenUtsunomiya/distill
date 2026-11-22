@@ -1,6 +1,6 @@
 # Design of the article delivery routine
 
-How to build MVP 1 of the [concept](distill-concept.md) with a Claude Code cloud routine and GitHub Issues / Projects. As of 2026-10-24.
+How to build MVP 1 of the [concept](distill-concept.md) with a Claude Code cloud routine, GitHub Issues and a reader page. As of 2026-10-24.
 
 ## Overall flow
 
@@ -75,27 +75,11 @@ AWS What's New publishes dozens of announcements a day (about 100 from 2026-11-1
 - Duplicates: compared against the links in earlier `aws-digest` issues. Digests are left out of the article duplicate check, since they have no `URL:` line
 - AWS blog posts are still delivered one by one as articles. For posts from aws.amazon.com, product and feature posts on a theme are kept, unlike other sources
 
-## Projects kanban board
-
-The routine's GitHub tools cannot read Project Status, so the mark is the `want` label, not a kanban column. The board is only a view, and the routine never looks at it.
-
-Create one user Project named `distill` and put the distill repository's issues on it.
-
-- **Status field**: two options, "New" and "Done"
-- **Built-in workflows**
-  - Auto-add to project: automatically add `is:issue label:article`
-  - Item added to project: set Status to "New"
-  - Auto-close issue: close the issue when Status becomes "Done" (closed as completed)
-  - Item closed: **turn it off**. If it stays on, articles closed as `stale` also move to "Done"
-- **Views**
-  - Today: filter `is:open -label:want`, the new articles to pick from
-  - To read: filter `is:open label:want`
-
-The routine only creates issues. Adding them to the Project and setting their Status is left to the workflows.
-
 ## Reader page
 
-Issues and the board were hard to read, so [app/](../app/README.md) has a page that lists the articles with their summaries and adds `want` or closes an issue with one button. It is hosted on Cloudflare Workers with GitHub sign-in so it works from a phone too; the design is in [reader-design.md](reader-design.md). It changes only labels and issue state, so the routine and the label-based tallies are unaffected.
+Articles are read and marked on a page, not on the issues or a Projects board. [app/](../app/README.md) has a page that lists the articles with their summaries and adds `want` or closes an issue with one button. It is hosted on Cloudflare Workers with GitHub sign-in so it works from a phone too; the design is in [reader-design.md](reader-design.md). It changes only labels and issue state, so the routine and the label-based tallies are unaffected.
+
+A Projects board with "Today" and "To read" views was used before the page, from 2026-11-21. The page covers both views, so the board is no longer part of the design (2026-11-22). The `distill` Project still exists but nothing depends on it.
 
 ## Deciding what is stale
 
@@ -126,4 +110,4 @@ Checks for whether the routine's environment can do the following. The first man
 
 ## Not decided yet
 
-- How to notice when the routine fails. At first, an empty board is enough of a signal
+- How to notice when the routine fails. At first, an empty "今日" tab on the reader page is enough of a signal

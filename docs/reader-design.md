@@ -4,7 +4,7 @@ A page for reading the article issues the routine delivers and marking them with
 
 ## Why
 
-- Issues and the Projects board are hard to read: the summaries are only visible after opening each issue
+- Issues and the Projects board were hard to read: the summaries are only visible after opening each issue
 - The first version ([PR #26](https://github.com/KenUtsunomiya/distill/pull/26)) was a local server that used the `gh` login. It only works while it runs on my PC, so it moves to a hosted page
 - A static page on GitHub Pages with a token pasted into the browser was considered and dropped: I do not want a long-lived token kept in the browser
 
@@ -122,9 +122,8 @@ The same as the first version, plus sign-in.
 
 ## Projects board
 
-The App has no permission for Projects, so the page does not set the Project's Status when it closes an issue. Closed issues stay "New" on the board, but both views only show open issues, so the board still looks right.
+The page replaces the Projects board, which is no longer part of the design (2026-11-22). The App has no permission for Projects, and the page does not touch the board.
 
 ## Not decided yet
 
-- Whether to keep the Projects board at all, now that the page covers both of its views
 - Whether to use a custom domain instead of https://distill-reader.distill-reader.workers.dev, where it runs since 2026-11-22
