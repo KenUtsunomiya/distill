@@ -95,7 +95,7 @@ The routine only creates issues. Adding them to the Project and setting their St
 
 ## Reader page
 
-Issues and the board were hard to read, so [app/](../app/README.md) has a local page that lists the articles with their summaries and adds `want` or closes an issue with one button. It runs on my PC with the `gh` login and changes only labels and issue state, so the routine and the label-based tallies are unaffected.
+Issues and the board were hard to read, so [app/](../app/README.md) has a page that lists the articles with their summaries and adds `want` or closes an issue with one button. It is hosted on GitHub Pages so it works from a phone too; the design is in [reader-design.md](reader-design.md). It changes only labels and issue state, so the routine and the label-based tallies are unaffected.
 
 ## Deciding what is stale
 
