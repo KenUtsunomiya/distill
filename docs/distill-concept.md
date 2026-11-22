@@ -27,10 +27,12 @@ In order of importance. Build 1 first.
 ## Collecting articles
 
 - A Claude Code cloud routine collects the articles. It runs in the cloud, so my PC does not need to be on
-- Candidates come from a web search per theme and from the RSS feeds of registered blogs and newsletters. The routine keeps the ones that match the themes
+- Candidates come from the RSS feeds of registered blogs and newsletters, and from the listing pages of the few sites without feeds. The routine keeps the ones that match the themes
+  - A web search per theme was tried at first, but it only returned old, evergreen pages, so it was dropped on 2026-11-22
+  - AWS feature announcements are collected into one digest issue per day
 - The routine checks that each link actually exists, and never delivers an article it has delivered before
 - Data sources: company engineering blogs, newsletters, Twitter. Personal blogs are not used
-- Twitter is not in the MVP. Posts that turn up in web searches are enough for now
+- Twitter is not in the MVP
   - The official X API can fetch posts, but as of 2026 it is pay-per-use with no free tier. Reading a post costs $0.005
   - If I find that I need it after using the MVP, add it through the official API's search. Searching by theme needs only an app-only Bearer token, not OAuth user authentication
   - Rough cost: 5 themes × 20 posts × 30 days comes to about $15 a month. Keep it down by capping the number of results per search

@@ -7,7 +7,7 @@ How to build MVP 1 of the [concept](distill-concept.md) with a Claude Code cloud
 The routine runs every day at 8:00 JST and does the following, in order.
 
 1. Labels `stale` and closes the earlier new articles that I did not mark `want`
-2. Collects candidates from the themes, RSS feeds and search-only sites in [config/sources.yaml](../config/sources.yaml)
+2. Collects candidates from the RSS feeds and the sites without feeds in [config/sources.yaml](../config/sources.yaml)
 3. Drops candidates that do not match a theme, were delivered before, or whose links do not open
 4. Creates one issue per remaining article
 5. Creates one digest issue of the on-theme AWS What's New announcements
@@ -21,7 +21,6 @@ The instruction registered in the routine is a single line. The actual steps liv
 | `article` | An article issue created by the routine. Separates them from other issues | By hand, once |
 | `theme:<slug>` | The article's theme. More than one is allowed | By hand, once. Also by hand when adding a theme |
 | `source:<host>` | The article's site, as the host name without `www.` (e.g. `source:simonwillison.net`) | By the routine, when missing |
-| `via:search` | Found via web search, not RSS. Shows whether the search is pulling its weight. Articles from RSS get no label | By hand, once |
 | `want` | An article I want to read. This is the mark the routine looks at | By hand, once |
 | `stale` | An article I did not mark `want`, closed by the routine | By hand, once |
 | `aws-digest` | The daily digest of AWS What's New announcements. Also has `article`, so `want` and `stale` work the same way | By hand, once |
@@ -36,7 +35,6 @@ gh label create article --color 0E8A16 --description "Article delivered by the r
 gh label create want --color 1D76DB --description "Marked to read; kept open by the routine"
 gh label create stale --color BFBFBF --description "Closed without being marked want"
 gh label create aws-digest --color FF9900 --description "Daily digest of AWS What's New announcements"
-gh label create via:search --color C5DEF5
 gh label create theme:agent-design --color FBCA04 --description "AI agent design"
 gh label create theme:tool-design --color FBCA04 --description "Tool design"
 gh label create theme:mcp --color FBCA04 --description "MCP"
@@ -118,7 +116,7 @@ Checks for whether the routine's environment can do the following. The first man
 3. Fetch RSS feeds and article pages (no network restrictions)
    - Works after switching the Default environment to full network access. Before that, most feed hosts failed DNS. Search results point to arbitrary hosts, so an allowlist is not enough
    - aws.amazon.com article pages come back as navigation only through WebFetch, so their bodies cannot be checked
-   - Web search returns results without publish dates, so no article from search has been kept yet
+   - Web search returned only old, evergreen pages, even after running every query and checking dates on the pages. Dropped on 2026-11-22 in favor of more RSS feeds, along with the `via:` labels
 4. Run at 8:00 JST. If the schedule is in UTC, set it to 23:00
    - Done: the routine's schedule is `0 23 * * *` (UTC)
 
