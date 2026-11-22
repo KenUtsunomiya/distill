@@ -110,4 +110,4 @@ Checks for whether the routine's environment can do the following. The first man
 
 ## Not decided yet
 
-- How to notice when the routine fails. At first, an empty "今日" tab on the reader page is enough of a signal
+- How to notice when the routine fails. At first, an empty "新着" tab on the reader page is enough of a signal
