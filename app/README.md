@@ -38,7 +38,9 @@ A page for reading the article issues the routine delivers and marking them with
    npx wrangler secret put GITHUB_CLIENT_SECRET
    ```
 
-5. Connect the repository in Cloudflare (Workers & Pages → the Worker → Settings → Builds), with `app` as the root directory. Every push to main then deploys. To deploy by hand instead, run `npm run deploy`.
+5. Connect the repository in Cloudflare (Workers & Pages → the Worker → Settings → Builds): branch `main`, root directory `app`, no build command, deploy command `npx wrangler deploy`. Every push to main then deploys. To deploy by hand instead, run `npm run deploy`.
+
+All five steps were done on 2026-11-22. The page runs at https://distill-reader.distill-reader.workers.dev.
 
 ## Local development
 
