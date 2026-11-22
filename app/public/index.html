@@ -3,14 +3,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#2f5d50" />
     <title>distill</title>
     <link rel="stylesheet" href="/style.css" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon-180.png" />
   </head>
   <body>
     <header class="top">
       <div class="top-inner">
-        <h1 class="brand">distill</h1>
-        <nav class="tabs" role="tablist">
+        <div class="brand-row">
+          <h1 class="brand">distill</h1>
+          <div class="who" id="who" hidden>
+            <span id="who-login"></span>
+            <button type="button" id="logout">ログアウト</button>
+          </div>
+        </div>
+        <nav class="tabs" role="tablist" id="tabs" hidden>
           <button role="tab" data-view="today" aria-selected="true">今日<span class="count"></span></button>
           <button role="tab" data-view="toread" aria-selected="false">読みたい<span class="count"></span></button>
           <button role="tab" data-view="done" aria-selected="false">読んだ<span class="count"></span></button>
@@ -19,6 +29,10 @@
     </header>
 
     <main class="page">
+      <section class="signin" id="signin" hidden>
+        <p>記事を読むには、GitHub でログインしてください。</p>
+        <a class="btn primary" href="/auth/login">GitHub でログイン</a>
+      </section>
       <p class="lead" id="lead"></p>
       <div class="filters" id="filters" hidden></div>
       <div id="list" aria-live="polite"></div>

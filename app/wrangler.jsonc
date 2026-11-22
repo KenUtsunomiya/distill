@@ -1,0 +1,25 @@
+// Cloudflare Worker for the distill reader. See docs/reader-design.md.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "distill-reader",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    // Run the Worker for every request, so static files get the security headers too.
+    "run_worker_first": true
+  },
+  "kv_namespaces": [
+    // Set the id after `npx wrangler kv namespace create SESSIONS`.
+    { "binding": "SESSIONS", "id": "00000000000000000000000000000000" }
+  ],
+  "vars": {
+    // The GitHub App's client id (not a secret). The client secret is a Worker
+    // secret: `npx wrangler secret put GITHUB_CLIENT_SECRET`.
+    "GITHUB_CLIENT_ID": "",
+    "ALLOWED_LOGIN": "KenUtsunomiya",
+    "REPO": "KenUtsunomiya/distill"
+  },
+  "observability": { "enabled": true }
+}

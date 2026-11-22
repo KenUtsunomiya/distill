@@ -2,11 +2,12 @@
   "name": "distill-reader",
   "private": true,
   "type": "module",
-  "description": "Local page for reading and marking distill's article issues",
-  "engines": {
-    "node": ">=20"
-  },
+  "description": "Reader page for distill's article issues, on Cloudflare Workers",
   "scripts": {
-    "start": "node server.mjs"
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.158.0"
   }
 }
