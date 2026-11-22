@@ -66,6 +66,8 @@ Create one issue per remaining article.
   <2–3 sentences: what the article covers and which themes it relates to>
   ```
 
+  The first line is used to detect duplicates, so write it exactly as `URL: https://...`: the bare URL, with no backticks, angle brackets or spaces around it.
+
 - **Labels**:
   - `article`
   - every matching `theme:<slug>`
