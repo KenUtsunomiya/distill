@@ -20,7 +20,7 @@ The instruction registered in the routine is a single line. The actual steps liv
 | `article` | An article issue created by the routine. Separates them from other issues | By hand, once |
 | `theme:<slug>` | The article's theme. More than one is allowed | By hand, once. Also by hand when adding a theme |
 | `source:<host>` | The article's site, as the host name without `www.` (e.g. `source:simonwillison.net`) | By the routine, when missing |
-| `via:rss` / `via:search` | How the article was found. Shows whether the search is pulling its weight | By hand, once |
+| `via:search` | Found via web search, not RSS. Shows whether the search is pulling its weight. Articles from RSS get no label | By hand, once |
 | `want` | An article I want to read. This is the mark the routine looks at | By hand, once |
 | `stale` | An article I did not mark `want`, closed by the routine | By hand, once |
 
@@ -33,7 +33,6 @@ Labels to create first:
 gh label create article --color 0E8A16 --description "Article delivered by the routine"
 gh label create want --color 1D76DB --description "Marked to read; kept open by the routine"
 gh label create stale --color BFBFBF --description "Closed without being marked want"
-gh label create via:rss --color C5DEF5
 gh label create via:search --color C5DEF5
 gh label create theme:agent-design --color FBCA04 --description "AI agent design"
 gh label create theme:tool-design --color FBCA04 --description "Tool design"
