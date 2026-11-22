@@ -69,7 +69,7 @@ button { font: inherit; color: inherit; }
 }
 
 .top-inner {
-  width: 75%;
+  width: 65%;
   margin: 0 auto;
   padding: 14px 20px 0;
   display: flex;
@@ -149,7 +149,7 @@ button { font: inherit; color: inherit; }
 /* ---- Page ---- */
 
 .page {
-  width: 75%;
+  width: 65%;
   margin: 0 auto;
   padding: 20px 20px 120px;
 }
@@ -396,7 +396,7 @@ button { font: inherit; color: inherit; }
   padding: 4px 6px;
 }
 
-/* Below 900px wide, 75% gets too narrow, so use the full width. */
+/* Below 900px wide, 65% gets too narrow, so use the full width. */
 @media (max-width: 899px) {
   .top-inner, .page { width: auto; }
 }
