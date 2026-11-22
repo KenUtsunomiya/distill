@@ -23,7 +23,10 @@ AWS digest issues (the `aws-digest` label, see step 5) are treated the same way.
 Read [config/sources.yaml](../config/sources.yaml).
 
 - **RSS**: from each feed in `feeds`, take the articles published in the last 48 hours
+  - The article's URL is the item's `<link>` in RSS. In Atom, it is the `<link>` whose `rel` is `alternate` or missing. Ignore other links, such as `rel="enclosure"`, which Hatena Blog feeds (tech.smarthr.jp, tech.layerx.co.jp) use for the article's image
 - **Sites**: open each site's `url` in `sites` directly. It is a listing page of the site's posts. Take the posts on it published in the last 7 days, and open each one to confirm its date. If the listing page cannot be read, skip the site and say so in the report
+
+"The last 48 hours" and "the last 7 days" count back from the current time, which you get with `date -u` at the start of this step. Do not assume a time, and do not widen the window with a margin.
 
 Do not use web search. It was tried and only returned old, evergreen pages.
 
@@ -72,7 +75,7 @@ The Project's workflows add issues to the Project and set their Status, so the r
 
 Collect AWS feature announcements into one issue, separately from the articles above.
 
-1. Fetch the `aws_whats_new` feed in [config/sources.yaml](../config/sources.yaml), and take the items published in the last 48 hours
+1. Fetch the `aws_whats_new` feed in [config/sources.yaml](../config/sources.yaml), and take the items published in the last 48 hours, counted the same way as in step 2: from the current time, with no margin
 2. Fetch every issue with the `aws-digest` label, open and closed, and drop items whose link already appears in one of them
 3. Keep only items that relate to a theme in `themes`. Drop region expansions, Partner Central, Marketplace, billing and pricing, minor engine or runtime version support, and anything else that does not change how systems are designed, built or operated
 4. If nothing is left, create no digest
