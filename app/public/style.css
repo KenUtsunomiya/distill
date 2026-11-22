@@ -265,7 +265,7 @@ button { font: inherit; color: inherit; }
 
 .actions { align-items: center; }
 
-.heart {
+.mark {
   width: 40px;
   height: 40px;
   border: 0;
@@ -279,27 +279,34 @@ button { font: inherit; color: inherit; }
   color: var(--muted);
 }
 
-.heart:hover { background: var(--chip); color: var(--heart); }
-
-.heart svg {
-  width: 24px;
-  height: 24px;
+.mark svg {
+  width: 26px;
+  height: 26px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
+  stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.heart[aria-pressed="true"] { color: var(--heart); }
-.heart[aria-pressed="true"] svg { fill: currentColor; }
+.mark:hover { background: var(--chip); }
+.mark:disabled { cursor: wait; }
 
-.heart.pop svg { animation: pop 0.25s ease-out; }
+.mark.pop svg { animation: pop 0.25s ease-out; }
 
 @keyframes pop {
   50% { transform: scale(1.3); }
 }
 
-.heart:disabled { cursor: wait; }
+/* Heart: want */
+.heart:hover, .heart[aria-pressed="true"] { color: var(--heart); }
+.heart[aria-pressed="true"] svg { fill: currentColor; }
+
+/* Check: read. Filled, it is a solid accent circle with a dark tick. */
+.check:hover { color: var(--accent-ink); }
+.check[aria-pressed="true"] { color: var(--accent); }
+.check[aria-pressed="true"] .ring { fill: var(--accent); }
+.check[aria-pressed="true"] .tick { stroke: var(--accent-text); stroke-width: 2.2; }
 
 /* ---- Digest ---- */
 

@@ -57,7 +57,7 @@ Then open http://localhost:8787. `.dev.vars` and the local KV data in `.wrangler
 | Tab | Shows | Buttons |
 |---|---|---|
 | 今日 | Open `article` issues without `want` | Heart: add `want` |
-| 読みたい | Open issues with `want` | 読んだ: close as completed / filled heart: remove `want` |
-| 読んだ | Issues with `want` closed as completed, the latest 50 | 読みたいに戻す: reopen |
+| 読みたい | Open issues with `want` | Check: close as completed / filled heart: remove `want` |
+| 読んだ | Issues with `want` closed as completed, the latest 50 | Filled check: reopen |
 
 Every button can be undone from the message that appears at the bottom.

@@ -4,7 +4,7 @@
 const views = ["today", "toread", "done"];
 const leads = {
   today: (n) => `未選択の記事が ${n} 件あります。ハートを付けなかった記事は、翌朝 8:00 に閉じられます。`,
-  toread: (n) => `読みたい記事が ${n} 件あります。読み終わったら「読んだ」を押してください。`,
+  toread: (n) => `読みたい記事が ${n} 件あります。読み終わったらチェックを付けてください。`,
   done: (n) => `最近読んだ記事 ${n} 件です。`,
 };
 const empties = {
@@ -133,44 +133,51 @@ function hideToast() {
 
 // ---- Rendering ----
 
-const HEART = "M12 20.5s-7.5-4.6-9.6-9.2C1 8.2 2.9 4.5 6.6 4.5c2.1 0 3.6 1.2 5.4 3.2 1.8-2 3.3-3.2 5.4-3.2 3.7 0 5.6 3.7 4.2 6.8-2.1 4.6-9.6 9.2-9.6 9.2z";
+const ICONS = {
+  heart: [["path", { d: "M12 20.5s-7.5-4.6-9.6-9.2C1 8.2 2.9 4.5 6.6 4.5c2.1 0 3.6 1.2 5.4 3.2 1.8-2 3.3-3.2 5.4-3.2 3.7 0 5.6 3.7 4.2 6.8-2.1 4.6-9.6 9.2-9.6 9.2z" }]],
+  check: [
+    ["circle", { cx: "12", cy: "12", r: "9.25", class: "ring" }],
+    ["path", { d: "M8 12.4l2.7 2.7L16.2 9.4", class: "tick" }],
+  ],
+};
 
-function heartIcon() {
+function icon(name) {
   const ns = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(ns, "svg");
   svg.setAttribute("viewBox", "0 0 24 24");
   svg.setAttribute("aria-hidden", "true");
-  const path = document.createElementNS(ns, "path");
-  path.setAttribute("d", HEART);
-  svg.append(path);
+  for (const [tag, attrs] of ICONS[name]) {
+    const el = document.createElementNS(ns, tag);
+    for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+    svg.append(el);
+  }
   return svg;
 }
 
-// The heart is the want mark: outlined on 今日, filled on 読みたい. Pressing it toggles want.
-function heartButton(card, el) {
-  const on = state.view === "toread";
-  const button = h("button", {
-    class: "heart",
-    type: "button",
-    "aria-pressed": String(on),
-    "aria-label": on ? "読みたいから外す" : "読みたい",
-    title: on ? "読みたいから外す" : "読みたい",
-  });
-  button.append(heartIcon());
+// An icon button that toggles one mark. `on` is whether the mark is set now;
+// pressing it runs `offAction` when on and `onAction` when off.
+function markButton(card, el, { kind, on, onAction, offAction, onLabel, offLabel }) {
+  const label = on ? onLabel : offLabel;
+  const button = h("button", { class: `mark ${kind}`, type: "button", "aria-pressed": String(on), "aria-label": label, title: label });
+  button.append(icon(kind));
   button.addEventListener("click", () => {
     button.setAttribute("aria-pressed", String(!on));
     button.classList.add("pop");
-    run(card, on ? "unwant" : "want", el());
+    run(card, on ? offAction : onAction, el());
   });
   return button;
 }
 
+// Heart = want (outlined on 今日, filled on 読みたい). Check = read (open on
+// 読みたい, filled on 読んだ).
 function buttonsFor(card, el) {
-  const btn = (label, action, primary) =>
-    h("button", { class: primary ? "btn primary" : "btn", type: "button", onclick: () => run(card, action, el()) }, label);
-  if (state.view === "today") return [heartButton(card, el)];
-  if (state.view === "toread") return [heartButton(card, el), btn("読んだ", "done", true)];
-  return [btn("読みたいに戻す", "reopen")];
+  const heart = (on) =>
+    markButton(card, el, { kind: "heart", on, onAction: "want", offAction: "unwant", onLabel: "読みたいから外す", offLabel: "読みたい" });
+  const check = (on) =>
+    markButton(card, el, { kind: "check", on, onAction: "done", offAction: "reopen", onLabel: "読みたいに戻す", offLabel: "読んだ" });
+  if (state.view === "today") return [heart(false)];
+  if (state.view === "toread") return [heart(true), check(false)];
+  return [check(true)];
 }
 
 function articleCard(card) {
