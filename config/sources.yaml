@@ -21,6 +21,13 @@ themes:
     name: Observability
   - slug: kubernetes
     name: Kubernetes
+  # Added on 2026-11-23.
+  - slug: agent-security
+    name: AI agent security
+  - slug: llm-inference
+    name: LLM inference infrastructure
+  - slug: reliability
+    name: Reliability and incident response (SRE)
 
 # Feeds confirmed to be fetchable on 2026-10-24.
 feeds:

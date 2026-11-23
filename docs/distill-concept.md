@@ -50,6 +50,9 @@ In order of importance. Build 1 first.
 - Data storage
 - Observability
 - Kubernetes
+- AI agent security (added 2026-11-23)
+- LLM inference infrastructure (added 2026-11-23)
+- Reliability and incident response, SRE (added 2026-11-23)
 
 Themes are not limited to AI.
 

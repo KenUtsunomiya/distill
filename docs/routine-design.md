@@ -44,6 +44,9 @@ gh label create theme:large-scale-systems --color FBCA04 --description "Large-sc
 gh label create theme:data-storage --color FBCA04 --description "Data storage"
 gh label create theme:observability --color FBCA04 --description "Observability"
 gh label create theme:kubernetes --color FBCA04 --description "Kubernetes"
+gh label create theme:agent-security --color FBCA04 --description "AI agent security"
+gh label create theme:llm-inference --color FBCA04 --description "LLM inference infrastructure"
+gh label create theme:reliability --color FBCA04 --description "Reliability and incident response (SRE)"
 ```
 
 ## Issue format
