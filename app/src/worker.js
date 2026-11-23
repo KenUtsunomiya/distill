@@ -239,7 +239,8 @@ function safeUrl(u) {
 function parseArticle(body) {
   const field = (name) => body.match(new RegExp(`^- ${name}:\\s*(.+)$`, "m"))?.[1].trim() ?? null;
   return {
-    url: safeUrl(body.match(/^URL:\s*(\S+)/m)?.[1] ?? ""),
+    // Tolerate a URL wrapped in backticks or angle brackets, which the routine sometimes writes.
+    url: safeUrl(body.match(/^URL:[\s`<]*([^\s`<>]+)/m)?.[1] ?? ""),
     source: field("Source"),
     published: field("Published"),
     summary: body.split(/^## Summary\s*$/m)[1]?.trim() ?? "",
